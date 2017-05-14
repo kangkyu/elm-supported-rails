@@ -5,7 +5,7 @@ const elmSource = path.resolve(process.cwd())
 
 const loaderOptions = () => {
   if (env.NODE_ENV === 'production') {
-    return `elm-webpack-loader?cwd=${elmSource}`
+    return `elm-webpack-loader?cwd=${elmSource}&pathToMake=node_modules/.bin/elm-make`
   }
 
   return `elm-hot-loader!elm-webpack-loader?cwd=${elmSource}&verbose=true&warn=true&debug=true`
