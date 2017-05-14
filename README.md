@@ -1,24 +1,38 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+a practice app using webpacker elm support
 
-Things you may want to cover:
+## Memorandom
 
-* Ruby version
+generate a new rails app
 
-* System dependencies
+```sh
+rails new rails_app_with_elm_support --webpack
+```
 
-* Configuration
+get newest webpacker
 
-* Database creation
+```ruby
+# Gemfile
+gem 'webpacker', git: 'https://github.com/rails/webpacker.git', branch: 'master'
+```
 
-* Database initialization
+```sh
+bundle
+rails webpacker:install
+rails webpacker:install:elm
+```
 
-* How to run the test suite
+alternatively you can (after the new version webpacker with elm support released)
 
-* Services (job queues, cache servers, search engines, etc.)
+```sh
+rails new rails_app_with_elm_support --webpack=elm
+```
 
-* Deployment instructions
+```sh
+rails server
+bin/webpack-dev-server # don't forget
+```
 
-* ...
+`<%= javascript_pack_tag "hello_elm" %>` on some page
+as commented at `app/javascript/packs/hello_elm.js`
