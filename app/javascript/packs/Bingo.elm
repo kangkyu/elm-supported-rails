@@ -88,7 +88,7 @@ generateRandomNumber =
 
 getEntries : Cmd Msg
 getEntries =
-    Http.send NewEntries (Http.get "http://localhost:3000/random-entries" (Decode.list entryDecoder))
+    Http.send NewEntries (Http.get "/random-entries" (Decode.list entryDecoder))
 
 
 
