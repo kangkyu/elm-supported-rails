@@ -1,7 +1,7 @@
 module Bingo exposing (..)
 
 import Html exposing (Html, text, h2, h1, a, footer, header, div, ul, li, span, button, input)
-import Html.Attributes exposing (id, class, href, classList, type_, placeholder, autofocus)
+import Html.Attributes exposing (id, class, href, classList, type_, placeholder, autofocus, value)
 import Html.Events exposing (onClick, onInput)
 import Random
 import Http
@@ -16,14 +16,19 @@ type alias Entry =
 
 
 type alias Model =
-    { name : String, gameNumber : Int, entries : List Entry }
+    { name : String
+    , gameNumber : Int
+    , entries : List Entry
+    , nameInput : String
+    }
 
 
 initialModel : Model
 initialModel =
-    { name = "Mike"
+    { name = "Anonymous"
     , gameNumber = 1
     , entries = []
+    , nameInput = ""
     }
 
 
@@ -37,13 +42,21 @@ type Msg
     | NewRandom Int
     | NewEntries (Result Http.Error (List Entry))
     | SetNameInput String
+    | SaveName
+    | CancelName
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        SaveName ->
+            ( { model | name = model.nameInput, nameInput = "" }, Cmd.none )
+
+        CancelName ->
+            ( { model | nameInput = "" }, Cmd.none )
+
         SetNameInput value ->
-            ( { model | name = value }, Cmd.none )
+            ( { model | nameInput = value }, Cmd.none )
 
         NewEntries (Ok randomEntries) ->
             ( { model | entries = randomEntries |> List.sortBy .points |> List.reverse }, Cmd.none )
@@ -169,11 +182,12 @@ viewNameInput model =
             [ type_ "text"
             , placeholder "Who's playing?"
             , autofocus True
+            , value model.nameInput
             , onInput SetNameInput
             ]
             []
-        , button [] [ text "Save" ]
-        , button [] [ text "Cancel" ]
+        , button [ onClick SaveName ] [ text "Save" ]
+        , button [ onClick CancelName ] [ text "Cancel" ]
         ]
 
 
