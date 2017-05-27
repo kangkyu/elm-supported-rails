@@ -1,8 +1,8 @@
 module Bingo exposing (..)
 
-import Html exposing (Html, text, h2, h1, a, footer, header, div, ul, li, span, button)
-import Html.Attributes exposing (id, class, href, classList)
-import Html.Events exposing (onClick)
+import Html exposing (Html, text, h2, h1, a, footer, header, div, ul, li, span, button, input)
+import Html.Attributes exposing (id, class, href, classList, type_, placeholder, autofocus)
+import Html.Events exposing (onClick, onInput)
 import Random
 import Http
 import Json.Decode as Decode exposing (Decoder, field, succeed)
@@ -36,11 +36,15 @@ type Msg
     | Mark Int
     | NewRandom Int
     | NewEntries (Result Http.Error (List Entry))
+    | SetNameInput String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        SetNameInput value ->
+            ( { model | name = value }, Cmd.none )
+
         NewEntries (Ok randomEntries) ->
             ( { model | entries = randomEntries |> List.sortBy .points |> List.reverse }, Cmd.none )
 
@@ -158,11 +162,27 @@ viewTotal number =
         ]
 
 
+viewNameInput : Model -> Html Msg
+viewNameInput model =
+    div [ class "name-input" ]
+        [ input
+            [ type_ "text"
+            , placeholder "Who's playing?"
+            , autofocus True
+            , onInput SetNameInput
+            ]
+            []
+        , button [] [ text "Save" ]
+        , button [] [ text "Cancel" ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.gameNumber
+        , viewNameInput model
         , viewEntryList model.entries
         , viewTotal (addEntryPoints model.entries)
         , div [ class "button-group" ]
